@@ -1,0 +1,24 @@
+.outWindow {
+  /*background:rgba(0,0,0,0);*/
+  height:300px;
+  width:500px;
+  /*color: white;*/
+  background-color: black;
+  border: 5px ridge gray;
+  position:absolute;
+  left:10%;
+  top:30%;
+  padding: 5px;
+  z-index:10;
+  /*word-break: break-all;*/
+  /*font-family: "Lucida Console", Monaco, monospace;*/
+  overflow: scroll;
+}
+
+.windowText {
+  color: white;
+  position: absolute;
+  bottom: 0;
+  word-break: break-all;
+  font-family: "Lucida Console", Monaco, monospace;
+}
