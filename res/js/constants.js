@@ -3,6 +3,7 @@ var FLOOD_SLEEP_TIME = 40;
 var OUT_WINDOW_PREFIX = "out_window_";
 var PROMPT_BLINK_INTERVAL = 500;
 var FLOOD_JUMP_LENGTH = [-1,36,-1];
+var ACCESS_GRANTED_APPEARANCE = 7;
 
 var COMMANDS_ARRAY = [
 "for f in *.jar; do if jar -tf $f | grep -q javax.servlet; then echo $f; fi; done",

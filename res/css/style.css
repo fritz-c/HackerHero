@@ -10,8 +10,6 @@
   top:30%;
   padding: 5px;
   z-index:10;
-  /*word-break: break-all;*/
-  /*font-family: "Lucida Console", Monaco, monospace;*/
   overflow: scroll;
 }
 
@@ -25,4 +23,22 @@
 
 div:focus {
   outline: none;
+}
+
+.accessGranted {
+  height:400px;
+  width:600px;
+  background-color: #009900;
+  position:absolute;
+  z-index:10;
+  display: table;
+}
+
+.accessMessage{
+  color: white;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 65px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }

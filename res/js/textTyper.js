@@ -19,6 +19,7 @@ TextTyper.prototype.initKeyHandler = function()
     if (key_code == 13 &&
       tempThis.outWindow.children("span").html().length - tempThis.outWindow.children("span").children("span")[0].outerHTML.length > 2)
     {
+      tempThis.outWindow.attr('contentEditable',false);
       // Add return after command line
       tempThis.outWindow.children("span").children("span").before("<br/>");
 
@@ -37,10 +38,14 @@ TextTyper.prototype.initKeyHandler = function()
     }
     // If almost any key (save for enter, backspace, and some function keys) is pressed, command
     //  text will be output to the outWindow
-    else if (key_code == 32 || key_code >= 48 && key_code <= 90 || key_code >= 94)
+    else if ((key_code == 32 || key_code >= 48 && key_code <= 90 || key_code >= 94) && outWindowCount < ACCESS_GRANTED_APPEARANCE)
     {
       tempThis.outWindow.attr('contentEditable',false);
       tempThis.outWindow.children("span").children("span").before(tempThis.myCommand.getTypedPart());
+    // Catch backspace
+    } else if (key_code == 8)
+    {
+      return false;
     }
   };
 };
@@ -68,7 +73,7 @@ TextTyper.prototype.initPromptBlink = function()
 TextTyper.prototype.createNewDiv = function()
 {
   var tempThis = this;
-  var windowFake = $("<div class='outWindow'></div>").hide().appendTo("body");
+  var windowFake = $("<div></div>").addClass("outWindow").hide().appendTo("body");
   var windowWidth = windowFake.outerWidth();
   var windowHeight = windowFake.outerHeight();
   windowFake.remove();
@@ -76,23 +81,39 @@ TextTyper.prototype.createNewDiv = function()
   var pageHeight = $(window).height();
   var tempWindowPositionLeft = 0;
   var tempWindowPositionTop = 0;
+  var tempWindowClassName = "";
 
   if (outWindowCount == 1)
   {
     tempWindowPositionLeft = (pageWidth - windowWidth) / 2;
     tempWindowPositionTop = (pageHeight - windowHeight) / 2;
+    tempWindowClassName = "outWindow";
   }
-  else
+  else if (outWindowCount < ACCESS_GRANTED_APPEARANCE)
   {
     tempWindowPositionLeft = Math.floor(Math.random() * (pageWidth - windowWidth));
     tempWindowPositionTop = Math.floor(Math.random() * (pageHeight - windowHeight));
+    tempWindowClassName = "outWindow";
+  } else {
+    windowFake = $("<div></div>").addClass("accessGranted").hide().appendTo("body");
+    windowWidth = windowFake.outerWidth();
+    windowHeight = windowFake.outerHeight();
+    windowFake.remove();
+    tempWindowPositionLeft = (pageWidth - windowWidth) / 2;
+    tempWindowPositionTop = (pageHeight - windowHeight) / 2;
+    tempWindowClassName = "accessGranted";
   }
 
   $('body').append("<div id='" + OUT_WINDOW_PREFIX + outWindowCount +
-    "' class='outWindow' onMouseDown='contentEditable=true' style='top:" + tempWindowPositionTop +
+    "' class='" + tempWindowClassName + "' onMouseDown='contentEditable=true' style='top:" + tempWindowPositionTop +
     "px; left:" + tempWindowPositionLeft + "px;'><span class='windowText'>$ <span>_</span></span></div>");
   tempThis.outWindow = $("#" + OUT_WINDOW_PREFIX + outWindowCount);
-  tempThis.initPromptBlink();
+  if (outWindowCount >= ACCESS_GRANTED_APPEARANCE)
+  {
+    tempThis.outWindow.html($("<span></span>").addClass("accessMessage").html("ACCESS<br/>GRANTED"));
+  }else{
+    tempThis.initPromptBlink();
+  }
 };
 
 
