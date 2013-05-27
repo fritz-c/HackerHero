@@ -1,27 +1,45 @@
-// var COMMANDS_FILENAME = "terminal_commands.txt";
-
+// Count used to increment out_window div id's
 var outWindowCount = 1;
 
+// Text typer constructor
 function TextTyper() {
+  // Gets command string object to be put in window
   this.myCommand = new CommandString(COMMANDS_ARRAY);
 }
 
+// Initializes the event handler to handle key input
 TextTyper.prototype.initKeyHandler = function()
 {
   var tempThis = this;
   document.onkeydown = function(event) {
     var key_code = event.keyCode;
-    if (key_code == 13 && tempThis.outWindow.children("span").html().length > 3)
+
+    // If enter is pressed with a non-blank command line,
+    //  create a new window and flood the old one
+    if (key_code == 13 &&
+      tempThis.outWindow.children("span").html().length - tempThis.outWindow.children("span").children("span")[0].outerHTML.length > 2)
     {
+      // Add return after command line
+      tempThis.outWindow.children("span").children("span").before("<br/>");
+
+      // Prepare command string for new out window
       tempThis.myCommand = new CommandString(COMMANDS_ARRAY);
+
+      // Prepare text flood and send
       var flood = new TextFlood();
       flood.sendFlood(tempThis.outWindow);
+
+      // Increment ID count
       outWindowCount++;
+
+      // Create new out window
       tempThis.createNewDiv();
     }
+    // If almost any key (save for enter, backspace, and some function keys) is pressed, command
+    //  text will be output to the outWindow
     else if (key_code == 32 || key_code >= 48 && key_code <= 90 || key_code >= 94)
     {
-      tempThis.outWindow.children("span").append(tempThis.myCommand.getTypedPart());
+      tempThis.outWindow.children("span").children("span").before(tempThis.myCommand.getTypedPart());
     }
   };
 };
@@ -30,16 +48,17 @@ TextTyper.prototype.initPromptBlink = function()
 {
   var tempThis = this;
   var originalTarget = tempThis.outWindow;
-  var willAppend = true;
+  var willShow = false;
   var blinkInterval = setInterval(function() {
-    if (willAppend)
+    if (willShow)
     {
-      originalTarget.children("span").append("_");
+      originalTarget.children("span").children("span").show();
     } else
     {
-      originalTarget.children("span").append("_");
+      originalTarget.children("span").children("span").hide();
     }
-    if(originalTarget != tempThis.outWindow && willAppend) clearInterval(blinkInterval);
+    willShow = !willShow;
+    if(originalTarget != tempThis.outWindow && willShow) clearInterval(blinkInterval);
   }, PROMPT_BLINK_INTERVAL);
 };
 
@@ -68,12 +87,16 @@ TextTyper.prototype.createNewDiv = function()
     tempWindowPositionTop = Math.floor(Math.random() * (pageHeight - windowHeight));
   }
 
-  // this.outWindow = $();
   $('body').append("<div id='" + OUT_WINDOW_PREFIX + outWindowCount +
     "' class='outWindow' style='top:" + tempWindowPositionTop +
-    "px; left:" + tempWindowPositionLeft + "px;'><span class='windowText'>$ </span></div>");
+    "px; left:" + tempWindowPositionLeft + "px;'><span class='windowText'>$ <span>_</span></span></div>");
   tempThis.outWindow = $("#" + OUT_WINDOW_PREFIX + outWindowCount);
+  tempThis.initPromptBlink();
 };
+
+
+
+
 
 function CommandString(commands_array) {
   this.command = commands_array[Math.floor(Math.random()*commands_array.length)];
@@ -108,7 +131,7 @@ TextFlood.prototype.sendFlood = function(targetElement)
       var nextHead = Math.min(headPosition + tempThis.floodJumpLength, tempThis.text.length);
       var outString = tempThis.text.substring(headPosition, nextHead);
       headPosition = nextHead;
-      targetElement.children("span").append(outString);
+      targetElement.children("span").children("span").before(outString);
       if(headPosition >= tempThis.text.length) clearInterval(interval);
   }, FLOOD_SLEEP_TIME);
 };
