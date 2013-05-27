@@ -39,6 +39,7 @@ TextTyper.prototype.initKeyHandler = function()
     //  text will be output to the outWindow
     else if (key_code == 32 || key_code >= 48 && key_code <= 90 || key_code >= 94)
     {
+      tempThis.outWindow.attr('contentEditable',false);
       tempThis.outWindow.children("span").children("span").before(tempThis.myCommand.getTypedPart());
     }
   };
@@ -88,7 +89,7 @@ TextTyper.prototype.createNewDiv = function()
   }
 
   $('body').append("<div id='" + OUT_WINDOW_PREFIX + outWindowCount +
-    "' class='outWindow' style='top:" + tempWindowPositionTop +
+    "' class='outWindow' onMouseDown='contentEditable=true' style='top:" + tempWindowPositionTop +
     "px; left:" + tempWindowPositionLeft + "px;'><span class='windowText'>$ <span>_</span></span></div>");
   tempThis.outWindow = $("#" + OUT_WINDOW_PREFIX + outWindowCount);
   tempThis.initPromptBlink();
