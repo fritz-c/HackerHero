@@ -1,4 +1,4 @@
-.outWindow {
+.commandWindow {
   /*background:rgba(0,0,0,0);*/
   height:300px;
   width:500px;
@@ -13,7 +13,7 @@
   overflow: scroll;
 }
 
-.windowText {
+.commandText {
   color: white;
   position: absolute;
   bottom: 0;

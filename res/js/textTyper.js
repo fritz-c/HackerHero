@@ -1,14 +1,22 @@
 // Count used to increment out_window div id's
 var outWindowCount = 1;
 
+// OutWindow constructor
+function OutWindow() {
+  this.cssClass = null;
+}
+
 // Text typer constructor
-function TextTyper() {
+function CommandWindow() {
   // Gets command string object to be put in window
   this.myCommand = new CommandString(COMMANDS_ARRAY);
 }
 
+// create the div
+// handle key input (assign to document?)
+
 // Initializes the event handler to handle key input
-TextTyper.prototype.initKeyHandler = function()
+CommandWindow.prototype.initKeyHandler = function()
 {
   var tempThis = this;
   document.onkeydown = function(event) {
@@ -17,18 +25,18 @@ TextTyper.prototype.initKeyHandler = function()
     // If enter is pressed with a non-blank command line,
     //  create a new window and flood the old one
     if (key_code == 13 &&
-      tempThis.outWindow.children("span").html().length - tempThis.outWindow.children("span").children("span")[0].outerHTML.length > 2)
+      tempThis.myWindow.children("span").html().length - tempThis.myWindow.children("span").children("span")[0].outerHTML.length > 2)
     {
-      tempThis.outWindow.attr('contentEditable',false);
+      tempThis.myWindow.attr('contentEditable',false);
       // Add return after command line
-      tempThis.outWindow.children("span").children("span").before("<br/>");
+      tempThis.myWindow.children("span").children("span").before("<br/>");
 
       // Prepare command string for new out window
       tempThis.myCommand = new CommandString(COMMANDS_ARRAY);
 
       // Prepare text flood and send
       var flood = new TextFlood();
-      flood.sendFlood(tempThis.outWindow);
+      flood.sendFlood(tempThis.myWindow);
 
       // Increment ID count
       outWindowCount++;
@@ -37,11 +45,11 @@ TextTyper.prototype.initKeyHandler = function()
       tempThis.createNewDiv();
     }
     // If almost any key (save for enter, backspace, and some function keys) is pressed, command
-    //  text will be output to the outWindow
+    //  text will be output to the myWindow
     else if ((key_code == 32 || key_code >= 48 && key_code <= 90 || key_code >= 94) && outWindowCount < ACCESS_GRANTED_APPEARANCE)
     {
-      tempThis.outWindow.attr('contentEditable',false);
-      tempThis.outWindow.children("span").children("span").before(tempThis.myCommand.getTypedPart());
+      tempThis.myWindow.attr('contentEditable',false);
+      tempThis.myWindow.children("span").children("span").before(tempThis.myCommand.getTypedPart());
     // Catch backspace
     } else if (key_code == 8)
     {
@@ -50,10 +58,10 @@ TextTyper.prototype.initKeyHandler = function()
   };
 };
 
-TextTyper.prototype.initPromptBlink = function()
+CommandWindow.prototype.initPromptBlink = function()
 {
   var tempThis = this;
-  var originalTarget = tempThis.outWindow;
+  var originalTarget = tempThis.myWindow;
   var willShow = false;
   var blinkInterval = setInterval(function() {
     if (willShow)
@@ -64,16 +72,16 @@ TextTyper.prototype.initPromptBlink = function()
       originalTarget.children("span").children("span").hide();
     }
     willShow = !willShow;
-    if(originalTarget != tempThis.outWindow && willShow) clearInterval(blinkInterval);
+    if(originalTarget != tempThis.myWindow && willShow) clearInterval(blinkInterval);
   }, PROMPT_BLINK_INTERVAL);
 };
 
 // console.log(COMMANDS_ARRAY);
 
-TextTyper.prototype.createNewDiv = function()
+CommandWindow.prototype.createNewDiv = function()
 {
   var tempThis = this;
-  var windowFake = $("<div></div>").addClass("outWindow").hide().appendTo("body");
+  var windowFake = $("<div></div>").addClass("commandWindow").hide().appendTo("body");
   var windowWidth = windowFake.outerWidth();
   var windowHeight = windowFake.outerHeight();
   windowFake.remove();
@@ -87,13 +95,13 @@ TextTyper.prototype.createNewDiv = function()
   {
     tempWindowPositionLeft = (pageWidth - windowWidth) / 2;
     tempWindowPositionTop = (pageHeight - windowHeight) / 2;
-    tempWindowClassName = "outWindow";
+    tempWindowClassName = "commandWindow";
   }
   else if (outWindowCount < ACCESS_GRANTED_APPEARANCE)
   {
     tempWindowPositionLeft = Math.floor(Math.random() * (pageWidth - windowWidth));
     tempWindowPositionTop = Math.floor(Math.random() * (pageHeight - windowHeight));
-    tempWindowClassName = "outWindow";
+    tempWindowClassName = "commandWindow";
   } else {
     windowFake = $("<div></div>").addClass("accessGranted").hide().appendTo("body");
     windowWidth = windowFake.outerWidth();
@@ -104,13 +112,30 @@ TextTyper.prototype.createNewDiv = function()
     tempWindowClassName = "accessGranted";
   }
 
-  $('body').append("<div id='" + OUT_WINDOW_PREFIX + outWindowCount +
-    "' class='" + tempWindowClassName + "' onMouseDown='contentEditable=true' style='top:" + tempWindowPositionTop +
-    "px; left:" + tempWindowPositionLeft + "px;'><span class='windowText'>$ <span>_</span></span></div>");
-  tempThis.outWindow = $("#" + OUT_WINDOW_PREFIX + outWindowCount);
+  $('body').append(
+    $("<div></div>")
+    .attr("id", OUT_WINDOW_PREFIX + outWindowCount)
+    .addClass(tempWindowClassName)
+    .mousedown(function(){
+      $(this).attr("contentEditable","true");
+    })
+    .css("top", tempWindowPositionTop + "px")
+    .css("left", tempWindowPositionLeft + "px")
+    .append(
+      $("<span></span>")
+      .addClass("commandText")
+      .text("$ ")
+      .append(
+        $("<span></span>")
+        .text("_")
+      )
+    )
+  );
+
+  tempThis.myWindow = $("#" + OUT_WINDOW_PREFIX + outWindowCount);
   if (outWindowCount >= ACCESS_GRANTED_APPEARANCE)
   {
-    tempThis.outWindow.html($("<span></span>").addClass("accessMessage").html("ACCESS<br/>GRANTED"));
+    tempThis.myWindow.html($("<span></span>").addClass("accessMessage").html("ACCESS<br/>GRANTED"));
   }else{
     tempThis.initPromptBlink();
   }
@@ -161,22 +186,22 @@ TextFlood.prototype.sendFlood = function(targetElement)
 // define the WhiteOnBlackTerminal class
 function WhiteOnBlackTerminal() {
   // Call the parent constructor
-  TextTyper.call(this);
+  CommandWindow.call(this);
 }
 
-// inherit TextTyper
+// inherit CommandWindow
 WhiteOnBlackTerminal.prototype = (function() {
   var Base = function() {};
-  Base.prototype = TextTyper.prototype;
+  Base.prototype = CommandWindow.prototype;
   return new Base();
 }());
-// new TextTyper();
+// new CommandWindow();
 
-// correct the constructor pointer because it points to TextTyper
+// correct the constructor pointer because it points to CommandWindow
 WhiteOnBlackTerminal.prototype.constructor = WhiteOnBlackTerminal;
 
 $(function() {
-  // $('body').append("<div id='" + OUT_WINDOW_PREFIX + outWindowCount + "' class='outWindow'><span class='windowText'>$ </span></div>");
+  // $('body').append("<div id='" + OUT_WINDOW_PREFIX + outWindowCount + "' class='commandWindow'><span class='windowText'>$ </span></div>");
   var whiteOnBlackTerminal1 = new WhiteOnBlackTerminal();
   whiteOnBlackTerminal1.createNewDiv();
   whiteOnBlackTerminal1.initKeyHandler();
