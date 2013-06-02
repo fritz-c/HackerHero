@@ -183,11 +183,3 @@ var tagOrComment = new RegExp(
      tagBody +
      ')>',
     'gi');
-function removeTags(html) {
-  var oldHtml;
-  do {
-    oldHtml = html;
-    html = html.replace(tagOrComment, '');
-  } while (html !== oldHtml);
-  return html.replace(/</g, '&lt;');
-}

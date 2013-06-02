@@ -32,12 +32,12 @@ div:focus {
   position:absolute;
   z-index:10;
   display: table;
-}
-
-.accessMessage{
   color: white;
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 65px;
+}
+
+.centerText{
   display: table-cell;
   vertical-align: middle;
   text-align: center;
@@ -50,4 +50,34 @@ div:focus {
   position:absolute;
   z-index:10;
   display: table;
+  color: white;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 65px;
+}
+
+/*.muteButton {
+  background-image: url("../img/sound_on.png");
+  background-position:  0 0;
+  background-repeat: no-repeat;
+  width: 186px;
+  height: 53px;
+  border: 0;
+}*/
+
+.muteButtonUnmuted, .muteButtonMuted {
+  color: #000000;
+  cursor: pointer;
+  font-weight: bold;
+  padding-bottom: 2px;
+  height: 35px;
+  width: 35px;
+  border: 0;
+}
+
+.muteButtonUnmuted {
+  background: url("../img/sound_on.png")  no-repeat top left;
+}
+
+.muteButtonMuted {
+  background: url("../img/sound_off.png")  no-repeat top left;
 }

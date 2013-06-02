@@ -1,6 +1,6 @@
 // Count used to increment out_window div id's
-var outWindowCount = 1;
-
+window.outWindowCount = 1;
+window.mute_all = false;
 
 
 //////////////////////////////////////////////////////////////////////
@@ -251,8 +251,14 @@ DisplayWindow.prototype.initWithHtmlAndClass = function(inHtml, cssClass)
   OutWindow.prototype.init.call(this, cssClass);
   this.jqObject = this.jqObject
     .html($("<span></span>")
-      .addClass("accessMessage")
+      .addClass("centerText")
       .html(inHtml));
+};
+
+DisplayWindow.prototype.draw = function(x, y)
+{
+  OutWindow.prototype.draw.call(this, x, y);
+  this.initKeyHandler();
 };
 
 // Initializes the event handler to handle key input
@@ -261,12 +267,9 @@ DisplayWindow.prototype.initKeyHandler = function()
   var tempThis = this;
   document.onkeydown = function(event) {
     var key_code = event.keyCode;
-
     // If enter is pressed with a non-blank command line,
     //  create a new window and flood the old one
-    if (key_code == 13 &&
-      tempThis.jqObject.children("span").html().length -
-      tempThis.jqObject.children("span").children("span")[0].outerHTML.length > 2)
+    if (key_code == 13)
     {
       // Create new out window
       // generateWindow();
@@ -283,6 +286,15 @@ DisplayWindow.prototype.initKeyHandler = function()
     } else if (key_code == 8){ return false; }
   };
 };
+
+function removeTags(html) {
+  var oldHtml;
+  do {
+    oldHtml = html;
+    html = html.replace(tagOrComment, '');
+  } while (html !== oldHtml);
+  return html.replace(/</g, '&lt;');
+}
 
 function generateWindow() {
   var pageWidth = $(window).width();
@@ -311,11 +323,14 @@ function generateWindow() {
     break;
   case 6:
     myOutWindow = new DisplayWindow();
-    if(Math.random(2) < 0.5)
+    // if(Math.random(2) < 0.5)
+    if(false)
     {
       myOutWindow.initWithHtmlAndClass("ACCESS<br/>GRANTED", "accessGranted");
     } else {
-      myOutWindow.initWithHtmlAndClass("NO GO<br/><img src='res/img/skull.gif'></img>", "accessDenied");
+      // playSound("res/sound/laugh_slow.wav");
+      document.getElementById('laugh_sound').play();
+      myOutWindow.initWithHtmlAndClass("NO GO<br/><img src='res/img/skull.gif'>", "accessDenied");
     }
     myOutWindow.draw(
     (pageWidth - myOutWindow.getWidth()) / 2,
@@ -330,6 +345,32 @@ function generateWindow() {
 }
 
 $(function() {
+  $('#mute_button').bind('click', function(){
+    // alert("hey");
+    if ($(this).hasClass('muteButtonUnmuted')) {
+      $(this).removeClass('muteButtonUnmuted').addClass('muteButtonMuted');
+    } else if ($(this).hasClass('muteButtonMuted')) {
+      $(this).removeClass('muteButtonMuted').addClass('muteButtonUnmuted');
+    } else {
+      $(this).addClass('muteButtonUnmuted');
+    }
+    $('audio,video').each(function(){
+      if (!mute_all) {
+        // if( !$(this).paused ) {
+          $(this).data('muted',true); //Store elements muted by the button.
+          $(this).muted=true; // or .muted=true to keep playing muted
+          // $(this).pause(); // or .muted=true to keep playing muted
+        // }
+      } else {
+        if( $(this).data('muted') ) {
+          $(this).data('muted',false);
+          $(this).muted=false; // or .muted=false
+          // $(this).play(); // or .muted=false
+        }
+      }
+    });
+    mute_all = !mute_all;
+  });
   generateWindow();
 });
 
