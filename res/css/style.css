@@ -64,7 +64,7 @@ div:focus {
   border: 0;
 }*/
 
-.muteButtonUnmuted, .muteButtonMuted {
+.muteButtonUnmuted, .muteButtonMuted, .bgmButtonUnmuted, .bgmButtonMuted {
   color: #000000;
   cursor: pointer;
   font-weight: bold;
@@ -80,4 +80,12 @@ div:focus {
 
 .muteButtonMuted {
   background: url("../img/sound_off.png")  no-repeat top left;
+}
+
+.bgmButtonUnmuted {
+  background: url("../img/bgm_unmuted.png")  no-repeat top left;
+}
+
+.bgmButtonMuted {
+  background: url("../img/bgm_muted.png")  no-repeat top left;
 }

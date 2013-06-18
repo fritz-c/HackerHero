@@ -328,8 +328,7 @@ function generateWindow() {
     {
       myOutWindow.initWithHtmlAndClass("ACCESS<br/>GRANTED", "accessGranted");
     } else {
-      // playSound("res/sound/laugh_slow.wav");
-      document.getElementById('laugh_sound').play();
+      playSound(EVIL_LAUGH_SOUND);
       myOutWindow.initWithHtmlAndClass("NO GO<br/><img src='res/img/skull.gif'>", "accessDenied");
     }
     myOutWindow.draw(
@@ -344,9 +343,13 @@ function generateWindow() {
   }
 }
 
+function playSound(sound) {
+  if (!window.mute_all)
+    sound.play();
+}
+
 $(function() {
   $('#mute_button').bind('click', function(){
-    // alert("hey");
     if ($(this).hasClass('muteButtonUnmuted')) {
       $(this).removeClass('muteButtonUnmuted').addClass('muteButtonMuted');
     } else if ($(this).hasClass('muteButtonMuted')) {
@@ -354,21 +357,19 @@ $(function() {
     } else {
       $(this).addClass('muteButtonUnmuted');
     }
-    $('audio,video').each(function(){
-      if (!mute_all) {
-        // if( !$(this).paused ) {
-          $(this).data('muted',true); //Store elements muted by the button.
-          $(this).muted=true; // or .muted=true to keep playing muted
-          // $(this).pause(); // or .muted=true to keep playing muted
-        // }
-      } else {
-        if( $(this).data('muted') ) {
-          $(this).data('muted',false);
-          $(this).muted=false; // or .muted=false
-          // $(this).play(); // or .muted=false
-        }
-      }
-    });
+    mute_all = !mute_all;
+  });
+  $('#bgm_button').bind('click', function(){
+    if ($(this).hasClass('bgmButtonUnmuted')) {
+      $(this).removeClass('bgmButtonUnmuted').addClass('bgmButtonMuted');
+      BGM_SOUND.pause();
+    } else if ($(this).hasClass('bgmButtonMuted')) {
+      $(this).removeClass('bgmButtonMuted').addClass('bgmButtonUnmuted');
+      BGM_SOUND.play();
+    } else {
+      $(this).addClass('bgmButtonUnmuted');
+      BGM_SOUND.play();
+    }
     mute_all = !mute_all;
   });
   generateWindow();
