@@ -323,8 +323,7 @@ function generateWindow() {
     break;
   case 6:
     myOutWindow = new DisplayWindow();
-    // if(Math.random(2) < 0.5)
-    if(false)
+    if(Math.random(2) < 0.5)
     {
       myOutWindow.initWithHtmlAndClass("ACCESS<br/>GRANTED", "accessGranted");
     } else {
@@ -345,7 +344,7 @@ function generateWindow() {
 
 function playSound(sound) {
   if (!window.mute_all)
-    sound.play();
+    sound.start(0);
 }
 
 $(function() {
@@ -362,15 +361,15 @@ $(function() {
   $('#bgm_button').bind('click', function(){
     if ($(this).hasClass('bgmButtonUnmuted')) {
       $(this).removeClass('bgmButtonUnmuted').addClass('bgmButtonMuted');
-      BGM_SOUND.pause();
+      BGM_SOUND.stop();
+
     } else if ($(this).hasClass('bgmButtonMuted')) {
       $(this).removeClass('bgmButtonMuted').addClass('bgmButtonUnmuted');
-      BGM_SOUND.play();
+      BGM_SOUND.start(0);
     } else {
       $(this).addClass('bgmButtonUnmuted');
-      BGM_SOUND.play();
+      BGM_SOUND.start(0);
     }
-    mute_all = !mute_all;
   });
   generateWindow();
 });
