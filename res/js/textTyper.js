@@ -325,6 +325,7 @@ function generateWindow() {
     myOutWindow = new DisplayWindow();
     if(Math.random(2) < 0.5)
     {
+      playSound(ACCESS_GRANTED_SOUND);
       myOutWindow.initWithHtmlAndClass("ACCESS<br/>GRANTED", "accessGranted");
     } else {
       playSound(EVIL_LAUGH_SOUND);

@@ -1,5 +1,8 @@
 var BGM_SOUND = null;
 var EVIL_LAUGH_SOUND = null;
+var ACCESS_GRANTED_SOUND = null;
+var ALARM_SOUND = null;
+var BLIP_SOUND = null;
 
 window.onload = initSound;
 var context;
@@ -60,8 +63,11 @@ function initSound() {
   bufferLoader = new BufferLoader(
     context,
     [
-      'res/audio/Rising.wav',
+      'res/audio/Rising.mp3',
       'res/audio/laugh_slow.wav',
+      'res/audio/access_granted.wav',
+      'res/audio/alarm.wav',
+      'res/audio/blip.wav',
     ],
     finishedLoading
     );
@@ -70,12 +76,24 @@ function initSound() {
 }
 
 function finishedLoading(bufferList) {
-  // Create two sources and play them both together.
+  // Create sources and play them together.
   BGM_SOUND = context.createBufferSource();
-  EVIL_LAUGH_SOUND = context.createBufferSource();
   BGM_SOUND.buffer = bufferList[0];
-  EVIL_LAUGH_SOUND.buffer = bufferList[1];
-
   BGM_SOUND.connect(context.destination);
+
+  EVIL_LAUGH_SOUND = context.createBufferSource();
+  EVIL_LAUGH_SOUND.buffer = bufferList[1];
   EVIL_LAUGH_SOUND.connect(context.destination);
+
+  ACCESS_GRANTED_SOUND = context.createBufferSource();
+  ACCESS_GRANTED_SOUND = bufferList[2];
+  ACCESS_GRANTED_SOUND.connect(context.destination);
+
+  ALARM_SOUND = context.createBufferSource();
+  ALARM_SOUND = bufferList[3];
+  ALARM_SOUND.connect(context.destination);
+
+  BLIP_SOUND = context.createBufferSource();
+  BLIP_SOUND = bufferList[4];
+  BLIP_SOUND.connect(context.destination);
 }
