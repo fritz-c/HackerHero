@@ -86,14 +86,14 @@ function finishedLoading(bufferList) {
   EVIL_LAUGH_SOUND.connect(context.destination);
 
   ACCESS_GRANTED_SOUND = context.createBufferSource();
-  ACCESS_GRANTED_SOUND = bufferList[2];
+  ACCESS_GRANTED_SOUND.buffer = bufferList[2];
   ACCESS_GRANTED_SOUND.connect(context.destination);
 
   ALARM_SOUND = context.createBufferSource();
-  ALARM_SOUND = bufferList[3];
+  ALARM_SOUND.buffer = bufferList[3];
   ALARM_SOUND.connect(context.destination);
 
   BLIP_SOUND = context.createBufferSource();
-  BLIP_SOUND = bufferList[4];
+  BLIP_SOUND.buffer = bufferList[4];
   BLIP_SOUND.connect(context.destination);
 }
